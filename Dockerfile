@@ -55,6 +55,9 @@ RUN apt-get install -y nodejs yarn
 # Installing handy tools
 RUN apt-get install -y sshpass openssh-client rsync
 
+# Symlink python 3 as python
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
 # Clean up
 RUN apt-get remove -y --auto-remove \
         python3-pip \
