@@ -1,11 +1,11 @@
 #
 # Provides a deploy image for Trellis with:
-# - Ubuntu 18.04
+# - Ubuntu 20.04
 # - Ansible
 # - Node.js
 # - Yarn
 #
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 LABEL author="Samuel Marchal <samuel@148.fr>"
 
