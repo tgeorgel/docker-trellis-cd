@@ -20,14 +20,14 @@ RUN apt-get update -y \
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y -q \
         build-essential \
-        python python-pip python-dev \
+        python3 python3-pip python3-dev \
         libffi-dev libssl-dev \
         libxml2-dev libxslt1-dev zlib1g-dev \
         git
 
 # Upgrading pip
 # @see https://github.com/pypa/pip/issues/5240#issuecomment-383129401
-RUN python -m pip install --upgrade pip \
+RUN python3 -m pip install --upgrade pip \
     && pip install --upgrade setuptools wheel \
     && pip install --upgrade pyyaml jinja2 pycrypto \
     && pip install --upgrade pywinrm
@@ -57,8 +57,8 @@ RUN apt-get install -y sshpass openssh-client rsync
 
 # Clean up
 RUN apt-get remove -y --auto-remove \
-        python-pip \
-        python-dev \
+        python3-pip \
+        python3-dev \
         libffi-dev \
         libssl-dev \
         curl \
