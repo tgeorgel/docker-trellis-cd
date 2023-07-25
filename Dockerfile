@@ -7,12 +7,12 @@
 #
 FROM ubuntu:20.04
 
-LABEL author="Samuel Marchal <samuel@148.fr>"
+LABEL author="Thomas Georgel <thomas@hydrat.agency>"
 
 # Adding Yarn package repository
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y curl \
-    && curl -sL https://deb.nodesource.com/setup_14.x | bash \
+    && curl -sL https://deb.nodesource.com/setup_16.x | bash \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
@@ -33,10 +33,10 @@ RUN python3 -m pip install --upgrade pip \
     && pip install --upgrade pywinrm
 
 # Downloading Ansible's source tree
-RUN git clone git://github.com/ansible/ansible.git --recursive \
+RUN git clone https://github.com/ansible/ansible.git --recursive \
     && cd ansible \
-    && git fetch origin v2.9.15 \
-    && git checkout v2.9.15
+    && git fetch origin v2.9.27 \
+    && git checkout v2.9.27
 
 # Compiling Ansible
 RUN cd ansible \
