@@ -30,6 +30,12 @@ docker tag [sha] tgeorgel/docker-trellis-cd:[TAG]
 docker push tgeorgel/docker-trellis-cd:[TAG]
 ```
 
+Alternatively, you can use the `buildx` command to build and push the image for multiple architectures at once:
+
+```bash
+docker buildx build --platform linux/amd64,linux/arm64 --push -t tgeorgel/docker-trellis-cd:1.4-node14 .
+```
+
 
 ## Example usage with Gitlab CI/CD
 
