@@ -1,13 +1,13 @@
 #
 # Provides a deploy image for Trellis with:
-# - Ubuntu 20.04
-# - Ansible
-# - Node.js
+# - Ubuntu   22.04
+# - Ansible  2.15
+# - Node.js  14
 # - Yarn
 #
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
-LABEL author="Samuel Marchal <samuel@148.fr>"
+LABEL author="Thomas Georgel <thomas@hydrat.agency>"
 
 # Adding Yarn package repository
 RUN apt-get update -y \
@@ -33,10 +33,10 @@ RUN python3 -m pip install --upgrade pip \
     && pip install --upgrade pywinrm
 
 # Downloading Ansible's source tree
-RUN git clone git://github.com/ansible/ansible.git --recursive \
+RUN git clone https://github.com/ansible/ansible.git --recursive \
     && cd ansible \
-    && git fetch origin v2.9.15 \
-    && git checkout v2.9.15
+    && git fetch origin v2.15.3 \
+    && git checkout v2.15.3
 
 # Compiling Ansible
 RUN cd ansible \
@@ -46,7 +46,6 @@ RUN cd ansible \
 RUN mkdir -p /opt/ansible \
     && mv /ansible/bin  /opt/ansible/bin \
     && mv /ansible/lib  /opt/ansible/lib \
-    && mv /ansible/docs /opt/ansible/docs \
     && rm -rf /ansible
 
 # Installing Node.js and Yarn
