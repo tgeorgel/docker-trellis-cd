@@ -15,7 +15,8 @@ This image can be used as a base image for your CI/CD pipeline.
  - 1.0-node*: Ubuntu 18.04 / Ansible 2.7 => see `zessx/trellis-cd` image
  - 1.2-node*: Ubuntu 18.04 / Ansible 2.9 => see `zessx/trellis-cd` image
  - 1.3-node*: Ubuntu 20.04 / Ansible 2.9
- - 1.4-node*: Ubuntu 22.04 / Ansible 2.15.2
+ - 1.3.1-node*: Ubuntu 20.04 / Ansible 2.15.3
+ - 1.4-node*: Ubuntu 22.04 / Ansible 2.15.3
 
 
 ## Adding new image
