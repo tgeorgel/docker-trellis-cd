@@ -2,19 +2,35 @@
 # Provides a deploy image for Trellis with:
 # - Ubuntu   22.04
 # - Ansible  2.15.3
-# - Node.js  14
+# - Node.js  12
 # - Yarn
 #
 FROM ubuntu:22.04
 
 LABEL author="Thomas Georgel <thomas@hydrat.agency>"
 
-# Adding Yarn package repository
+# && curl -sL https://deb.nodesource.com/setup_12.x | bash \
+
+# Adding dependancies
 RUN apt-get update -y \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y curl \
-    && curl -sL https://deb.nodesource.com/setup_16.x | bash \
-    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y curl gnupg2 apt-transport-https ca-certificates software-properties-common
+
+ENV NVM_DIR /usr/local/nvm
+ENV NODE_VERSION 12.22.12
+
+# Install nvm with node and npm
+RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.32.0/install.sh | bash \
+    && . $NVM_DIR/nvm.sh \
+    && nvm install $NODE_VERSION \
+    && nvm alias default $NODE_VERSION \
+    && nvm use default
+
+# Adding Yarn package repository
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
+ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/v$NODE_VERSION/bin:$PATH
 
 # Installing Ansible's prerequisites
 RUN apt-get update -y \
