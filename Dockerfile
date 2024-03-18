@@ -2,7 +2,7 @@
 # Provides a deploy image for Trellis with:
 # - Ubuntu   22.04
 # - Ansible  2.15
-# - Node.js  14
+# - Node.js  18
 # - Yarn
 #
 FROM ubuntu:22.04
@@ -12,7 +12,7 @@ LABEL author="Thomas Georgel <thomas@hydrat.agency>"
 # Adding Yarn package repository
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y curl \
-    && curl -sL https://deb.nodesource.com/setup_14.x | bash \
+    && curl -sL https://deb.nodesource.com/setup_18.x | bash \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
@@ -20,9 +20,9 @@ RUN apt-get update -y \
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y -q \
         build-essential \
-        python3 python3-pip python3-dev \
-        libffi-dev libssl-dev \
-        libxml2-dev libxslt1-dev zlib1g-dev \
+        python3 python3-pip python3-dev python3-packaging python3-resolvelib \
+        libffi-dev libssl-dev libpq-dev libldap2-dev \
+        libxml2-dev libxslt1-dev libsasl2-dev libjpeg-dev zlib1g-dev \
         git
 
 # Upgrading pip
@@ -62,6 +62,10 @@ RUN apt-get remove -y --auto-remove \
         python3-pip \
         python3-dev \
         libffi-dev \
+        libpq-dev \
+        libldap2-dev \
+        libsasl2-dev \
+        libssl-dev \
         libssl-dev \
         curl \
     && apt-get clean \
@@ -75,6 +79,10 @@ RUN mkdir -p /etc/ansible \
 ENV PATH             /opt/ansible/bin:$PATH
 ENV PYTHONPATH       /opt/ansible/lib:$PYTHONPATH
 ENV MANPATH          /opt/ansible/docs/man:$MANPATH
+
+# Install Ansible collections
+RUN ansible-galaxy collection install community.general \
+    && ansible-galaxy collection install ansible.posix
 
 # Default command: displays tool versions
 CMD [ "sh", "-c", "echo \"Ansible: \\e[32m$(ansible --version | cut -d ' ' -f 2 | tr -d '\\n')\\e[39m\\nNode:    \\e[32m$(node --version | cut -d 'v' -f 2)\\e[39m\\nYarn:    \\e[32m$(yarn --version)\\e[39m\"" ]
