@@ -17,6 +17,7 @@ This image can be used as a base image for your CI/CD pipeline.
  - 1.3-node*: Ubuntu 20.04 / Ansible 2.9
  - 1.3.1-node*: Ubuntu 20.04 / Ansible 2.15.3
  - 1.4-node*: Ubuntu 22.04 / Ansible 2.15.3
+ - 1.5-node*: Ubuntu 24.04 / Ansible 2.19.7
 
 
 ## Adding new image
@@ -33,7 +34,7 @@ docker push tgeorgel/docker-trellis-cd:[TAG]
 Alternatively, you can use the `buildx` command to build and push the image for multiple architectures at once:
 
 ```bash
-docker buildx build --platform linux/amd64,linux/arm64 --push -t tgeorgel/docker-trellis-cd:1.4-node14 .
+docker buildx build --platform linux/amd64,linux/arm64 --push -t tgeorgel/docker-trellis-cd:1.5-node24 .
 ```
 
 
@@ -59,7 +60,7 @@ variables:
 
 deploy_site:
   stage: deploy
-  image: tgeorgel/docker-trellis-cd:1.4-node14
+  image: tgeorgel/docker-trellis-cd:1.5-node24
   cache: {}
   script:
     # Prepare Folder Structure

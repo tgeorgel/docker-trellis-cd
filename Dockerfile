@@ -1,42 +1,37 @@
 #
 # Provides a deploy image for Trellis with:
-# - Ubuntu   22.04
-# - Ansible  2.15.3
-# - Node.js  14
+# - Ubuntu   24.04
+# - Ansible  v2.19.7
+# - Node.js  24
 # - Yarn
 #
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 LABEL author="Thomas Georgel <thomas@hydrat.agency>"
 
 # Adding Yarn package repository
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y curl \
-    && curl -sL https://deb.nodesource.com/setup_16.x | bash \
+    && curl -sL https://deb.nodesource.com/setup_24.x | bash \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
-# Installing Ansible's prerequisites
+# Installing Ansible's prerequisites (Python libs via apt — avoids PEP 668 / pip-on-Debian issues)
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y -q \
         build-essential \
-        python3 python3-pip python3-dev python3-packaging python3-resolvelib \
+        python3 python3-dev python3-packaging python3-resolvelib \
+        python3-setuptools python3-wheel \
+        python3-yaml python3-jinja2 python3-pycryptodome python3-winrm \
         libffi-dev libssl-dev libpq-dev libldap2-dev \
         libxml2-dev libxslt1-dev libsasl2-dev libjpeg-dev zlib1g-dev \
         git
 
-# Upgrading pip
-# @see https://github.com/pypa/pip/issues/5240#issuecomment-383129401
-RUN python3 -m pip install --upgrade pip \
-    && pip install --upgrade setuptools wheel \
-    && pip install --upgrade pyyaml jinja2 pycryptodome \
-    && pip install --upgrade pywinrm
-
 # Downloading Ansible's source tree
 RUN git clone https://github.com/ansible/ansible.git --recursive \
     && cd ansible \
-    && git fetch origin v2.15.3 \
-    && git checkout v2.15.3
+    && git fetch origin v2.19.7 \
+    && git checkout v2.19.7
 
 # Compiling Ansible
 RUN cd ansible \
@@ -59,7 +54,6 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Clean up
 RUN apt-get remove -y --auto-remove \
-        python3-pip \
         python3-dev \
         libffi-dev \
         libpq-dev \
@@ -75,10 +69,10 @@ RUN apt-get remove -y --auto-remove \
 RUN mkdir -p /etc/ansible \
     && echo 'localhost' > /etc/ansible/hosts
 
-# Define environment variables
-ENV PATH             /opt/ansible/bin:$PATH
-ENV PYTHONPATH       /opt/ansible/lib:$PYTHONPATH
-ENV MANPATH          /opt/ansible/docs/man:$MANPATH
+# Define environment variables (key=value avoids BuildKit legacy/undefined-var warnings)
+ENV PATH=/opt/ansible/bin:$PATH \
+    PYTHONPATH=/opt/ansible/lib \
+    MANPATH=/opt/ansible/docs/man
 
 # Install Ansible collections
 RUN ansible-galaxy collection install community.general \
