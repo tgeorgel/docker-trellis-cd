@@ -19,6 +19,8 @@ This image can be used as a base image for your CI/CD pipeline.
  - 1.4-node*: Ubuntu 22.04 / Ansible 2.15.3
  - 1.5-node*: Ubuntu 24.04 / Ansible 2.19.7
 
+View available tags at [Docker](https://hub.docker.com/r/tgeorgel/docker-trellis-cd/tags).
+
 
 ## Adding new image
 
