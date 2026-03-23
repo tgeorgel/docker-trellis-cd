@@ -2,7 +2,7 @@
 # Provides a deploy image for Trellis with:
 # - Ubuntu   24.04
 # - Ansible  v2.19.7
-# - Node.js  24
+# - Node.js  22
 # - Yarn
 #
 FROM ubuntu:24.04
@@ -12,7 +12,7 @@ LABEL author="Thomas Georgel <thomas@hydrat.agency>"
 # Adding Yarn package repository
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y curl \
-    && curl -sL https://deb.nodesource.com/setup_24.x | bash \
+    && curl -sL https://deb.nodesource.com/setup_22.x | bash \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
